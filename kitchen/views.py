@@ -1,11 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import generic
 
+from kitchen.forms import DishTypeSearchForm, DishSearchForm, CookCreationForm
 from kitchen.models import DishType, Dish, Cook
 
 
-# Create your views here.
-# а это хз зачем, потом решу куда его совать, можно сделать как регистрационную страницу +-
 def index(request):
     dish_type = DishType.objects.all()
 
@@ -15,40 +15,62 @@ def index(request):
     return render(request, "kitchen/index.html", context=context)
 
 
-# тут сделать список из всех видов блюд + их кол-во
 class DishTypeListView(generic.ListView):
     model = DishType
     context_object_name = "dish_type_list"
     template_name = "kitchen/dish_type_list.html"
     paginate_by = 10
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(DishTypeListView, self).get_context_data(**kwargs)
+        name = self.request.GET.get("name", "")
+        context["search_form"] = DishTypeListView(
+            initial={"name": name}
+        )
+        return context
 
-# тут детали , тут понятно все
+    def get_queryset(self):
+        queryset = DishType.objects.all()
+        form = DishTypeSearchForm(self.request.GET)
+        if form.is_valid():
+            return queryset.filter(name__icontains=form.cleaned_data["name"])
+        return queryset
+
+
 class DishTypeDetailView(generic.DetailView):
     model = DishType
 
 
-# список всех шефов и их года экспириенса
 class CookListView(generic.ListView):
     model = Cook
     paginate_by = 10
 
 
-# тут детали шефа, я думаю понятно
-class CookDetailView(generic.DetailView):
+class CookCreateView(LoginRequiredMixin, generic.CreateView):
     model = Cook
+    form_class = CookCreationForm
 
 
-# список из всех блюд, их вид, их прайс
 class DishListView(generic.ListView):
     model = Dish
     paginate_by = 10
-    queryset = Dish.objects.prefetch_related('cooks')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(DishListView, self).get_context_data(**kwargs)
+        name = self.request.GET.get("name", "")
+        context["search_form"] = DishListView(
+            initial={"name": name}
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = Dish.objects.prefetch_related('cooks')
+        form = DishSearchForm(self.request.GET)
+        if form.is_valid():
+            return queryset.filter(name__icontains=form.cleaned_data["name"])
+        return queryset
 
 
-# тут детали блюда, цена, название, описание, возможно время приготовления
 class DishDetailView(generic.DetailView):
     model = Dish
     queryset = Dish.objects.select_related('dish_type').prefetch_related('cooks')
-
-# завтра доделать вьюшки, сёрч формы, регистрацию +-, темплейты и если будет время их кастомизировать через бутстрап
