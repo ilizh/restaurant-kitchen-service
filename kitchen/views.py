@@ -6,6 +6,10 @@ from kitchen.forms import DishTypeSearchForm, DishSearchForm, CookCreationForm
 from kitchen.models import DishType, Dish, Cook
 
 
+<<<<<<< HEAD
+=======
+# Create your views here.
+>>>>>>> 000f36bf908d2fc4fe0b31e684013693c82dd3bf
 def index(request):
     dish_type = DishType.objects.all()
 
@@ -46,7 +50,11 @@ class CookListView(generic.ListView):
     paginate_by = 10
 
 
+<<<<<<< HEAD
 class CookCreateView(LoginRequiredMixin, generic.CreateView):
+=======
+class CookDetailView(generic.DetailView):
+>>>>>>> 000f36bf908d2fc4fe0b31e684013693c82dd3bf
     model = Cook
     form_class = CookCreationForm
 
