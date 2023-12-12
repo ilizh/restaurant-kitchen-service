@@ -1,0 +1,61 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Blog Author {% endblock %}
+
+{% block body_class %} blog-author {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+  {% include 'includes/navigation.html' %}
+
+  <header>
+    <div class="page-header min-height-400" style="background-image: url('{{ ASSETS_ROOT }}static/img/city-profile.jpg');" loading="lazy">
+      <span class="mask bg-gradient-dark opacity-8"></span>
+    </div>
+  </header>
+
+  <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6 mb-4">
+    <!-- START Testimonials w/ user image & text & info -->
+    {% if cook_list %}
+			{% for cook in cook_list %}
+			<section class="py-sm-7 py-5 position-relative">
+      	<div class="container">
+        	<div class="row">
+          	<div class="col-12 mx-auto">
+            	<div class="mt-n8 mt-md-n9 text-center">
+              	<img class="avatar avatar-xxl shadow-xl position-relative z-index-2" src="{{ ASSETS_ROOT }}/static/img/bruce-mars.jpg" alt="bruce" loading="lazy">
+            	</div>
+            <div class="row py-5">
+              <div class="col-lg-7 col-md-7 z-index-2 position-relative px-md-2 px-sm-5 mx-auto">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+									<table>
+                  <tr>
+										<th><h3 class="mb-0">{{ cook.first_name }} {{ cook.last_name }}</h3></th></tr>
+										</table>
+                  <div class="d-block">
+                    <button type="button" class="btn btn-sm btn-outline-info text-nowrap mb-0"><a href="{% url 'kitchen:create-cooks' %}">Create</a></button>
+                  </div>
+                </div>
+                <div class="row mb-4">
+                  <div class="col-auto">
+                    <span>Years of experience:</span>
+										<span class="h6">{{ cook.years_of_experience }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  	</div>
+			{% endfor %}
+	{% endif %}
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
