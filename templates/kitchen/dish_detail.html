@@ -1,0 +1,72 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Blog Author {% endblock %}
+
+{% block body_class %} blog-author {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+  {% include 'includes/navigation-light.html' %}
+
+  <header>
+    <div class="page-header min-height-400" style="background-image: url('{{ ASSETS_ROOT }}/img/city-profile.jpg');" loading="lazy">
+      <span class="mask bg-gradient-dark opacity-8"></span>
+    </div>
+  </header>
+
+	<div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6 mb-4">
+    <!-- START Testimonials w/ user image & text & info -->
+    <section class="py-sm-7 py-5 position-relative">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mx-auto">
+            <div class="mt-n8 mt-md-n9 text-center">
+            </div>
+            <div class="row py-5">
+              <div class="col-lg-7 col-md-7 z-index-2 position-relative px-md-2 px-sm-5 mx-auto">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h3 class="mb-0">{{ dish.name }}</h3>
+                </div>
+								{% if dish in user.dishes.all %}
+      						<a href="{% url 'kitchen:toggle-dish-assign' pk=dish.id %}" class="btn btn-danger link-to-page">
+        					Delete me from this dish
+      						</a>
+    						{% else %}
+      						<a href="{% url 'kitchen:toggle-dish-assign' pk=dish.id %}" class="btn btn-success link-to-page">
+        					Assign me to this dish
+									</a>
+    						{% endif %}
+								<div class="row mb-4">
+                  <div class="col-auto">
+                    <span>Price: {{ dish.price }}</span>
+                  </div>
+                </div>
+									<p class="text-lg mb-0">
+										{{ dish.description }}
+										<br><a href="javascript:;" class="text-info icon-move-right">
+                  	</a>
+                	</p>
+									<p class="text-lg mb-0">
+									Cooks:
+										{% for cook in dish.cooks.all %}
+											{{ cook.first_name }} {{ cook.last_name }}
+										{% endfor %}
+									</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

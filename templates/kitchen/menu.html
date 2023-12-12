@@ -1,3 +1,5 @@
+{% load crispy_forms_filters %}
+{% load query_transform %}
 <!--
 =========================================================
 * Material Kit 2 - v3.0.0
@@ -17,8 +19,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="{{ ASSETS_ROOT }}/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="{{ ASSETS_ROOT }}/img/favicon.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="{{ ASSETS_ROOT }}/static/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="{{ ASSETS_ROOT }}/static/img/favicon.png">
 
   <title>
     Django Material Kit 2 - Features | AppSeed
@@ -27,14 +29,14 @@
   <!--     Fonts and icons     -->
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
   <!-- Nucleo Icons -->
-  <link href="{{ ASSETS_ROOT }}/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="{{ ASSETS_ROOT }}/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="{{ ASSETS_ROOT }}/static/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="{{ ASSETS_ROOT }}/static/css/nucleo-svg.css" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <!-- CSS Files -->
-  <link id="pagestyle" href="{{ ASSETS_ROOT }}/css/material-kit.css?v=3.0.0" rel="stylesheet" />
+  <link id="pagestyle" href="{{ ASSETS_ROOT }}/static/css/material-kit.css?v=3.0.0" rel="stylesheet" />
 
 </head>
 <body class="features-sections">
@@ -45,24 +47,31 @@
     <div class="row">
       <div class="col-lg-12 mx-auto">
         <div class="mb-4 w-100 w-md-50 w-lg-25">
+					<div class="input-group rounded">
+  	<input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+		<span class="input-group-text border-0" id="search-addon">
+    	<i class="fas fa-search"></i>
+  	</span>
+	</div>
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item active" aria-current="page">Menu</li>
-              <li class="breadcrumb-item"><a href="drinks-menu.html">Drinks</a></li>
-            </ol>
+						</ol>
           </nav>
         </div>
         <div class="position-relative border-radius-xl overflow-hidden shadow-lg mb-7">
             <div class="row justify-space-between py-2">
-              <div class="col-lg-3">
+              <div>
                 <div class="nav-wrapper position-relative end-0">
-									<p class="lead text-dark pt-1 mb-0">Feature 12</p><br>
-									<p class="lead text-dark pt-1 mb-0">Feature 12</p><br>
-									<p class="lead text-dark pt-1 mb-0">Feature 12</p><br>
-									<p class="lead text-dark pt-1 mb-0">Feature 12</p><br>
+										{% for dish in dish_list %}
+											<p class="lead text-dark pt-3 mb-2"><a href="{% url 'kitchen:dish-detail' pk=dish.id %}">{{ dish.name }}</a>:<p class="text-dark mb-2">{{ dish.description }}</p><br>
+										{% endfor %}
                 </div>
               </div>
           </div>
+				<div class="d-block">
+                    <button type="button" class="btn btn-sm btn-outline-info text-nowrap mb-0"><a href="{% url 'kitchen:create-dish' %}">Create</a></button>
+                  </div>
           <div class="tab-content tab-space">
             <div class="tab-pane active" id="preview-features-1">
               <iframe class="w-100 height-600" srcdoc='<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"'>
