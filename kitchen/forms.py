@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
-from kitchen.models import Cook
+from kitchen.models import Cook, Dish, DishType
 
 
 class DishSearchForm(forms.Form):
@@ -45,7 +45,20 @@ class CookCreationForm(UserCreationForm):
 
 
 def check_years_of_experience(years_of_experience):
-    if years_of_experience is not int:
-        raise ValidationError("Input correct value for years of experience!")
-    if years_of_experience <= 0:
-        raise ValidationError("Minimum value for years of experience is 1!")
+    if not isinstance(years_of_experience, int):
+        raise ValueError('Input correct value')
+    if years_of_experience < 1:
+        raise ValidationError('Minimum value for years of experience is 1!')
+    return years_of_experience
+
+
+class DishCreationForm(forms.ModelForm):
+    class Meta:
+        model = Dish
+        fields = "__all__"
+
+
+class DishTypeForm(forms.ModelForm):
+    class Meta:
+        model = DishType
+        fields = "__all__"
