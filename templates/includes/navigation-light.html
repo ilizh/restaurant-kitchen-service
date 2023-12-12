@@ -1,0 +1,53 @@
+  <!-- Navbar Light -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
+    <div class="container">
+      <a class="navbar-brand font-weight-bolder ms-sm-3" href="/" rel="tooltip" title="Designed and Coded by Creative Tim" data-placement="bottom">
+              Restaurant
+            </a>
+      <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-
+        icon mt-2">
+          <span class="navbar-toggler-bar bar1"></span>
+          <span class="navbar-toggler-bar bar2"></span>
+          <span class="navbar-toggler-bar bar3"></span>
+        </span>
+      </button>
+      <div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0 ms-lg-12 ps-lg-5" id="navigation">
+        <ul class="navbar-nav navbar-nav-hover ms-auto">
+          <li class="nav-item dropdown dropdown-hover mx-2 ms-lg-5">
+            <a class="nav-link ps-2 d-flex justify-content-between cursor-pointer align-items-center" id="dropdownMenuPages5" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="material-icons opacity-6 me-2 text-md">dashboard</i>
+                    Menu
+                    <img src="{{ ASSETS_ROOT }}/static/img/down-arrow-dark.svg" alt="down-arrow" class="arrow ms-auto ms-md-2">
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-animation ms-n3 dropdown-md p-3 border-radius-xl mt-0 mt-lg-3" aria-labelledby="dropdownMenuPages">
+                    <div class="d-none d-lg-block">
+                      <h6 class="dropdown-header text-dark font-weight-bolder d-flex align-items-center px-1">
+                        Landing Pages
+                      </h6>
+                      <a href="{% url 'kitchen:dish-types' %}" class="dropdown-item border-radius-md">
+                        <span>Dish types</span>
+                      </a>
+                      <a href="{% url 'kitchen:menu' %}" class="dropdown-item border-radius-md">
+                        <span>Dishes</span>
+                      </a>
+                      <a href="{% url 'kitchen:cook-list' %}" class="dropdown-item border-radius-md">
+                        <span>Our cooks</span>
+                      </a>
+                      <h6 class="dropdown-header text-dark font-weight-bolder d-flex align-items-center px-1 mt-3">
+                        Account
+                      </h6>
+                      <a href="{% url 'kitchen:user-login' %}
+" class="dropdown-item border-radius-md">
+                        <span>Sign In</span>
+                      </a>
+                    </div>
+									</div>
+					</li>
+
+
+                
+        </ul>
+      </div>
+    </div>
+  </nav>
