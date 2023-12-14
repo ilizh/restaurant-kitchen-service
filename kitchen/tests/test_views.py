@@ -1,11 +1,102 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from kitchen.models import DishType, Dish
-
+from kitchen.models import DishType, Dish, Cook
 
 DISH_TYPES_URL = reverse("kitchen:dish-types")
 MENU_URL = reverse("kitchen:menu")
+COOK_CREATE_URL = reverse("kitchen:create-cooks")
+DISH_CREATE_URL = reverse("kitchen:create-dish")
+
+
+class DishDetailViewTest(TestCase):
+    def setUp(self):
+        self.dish_type = DishType.objects.create(name="Test Dish Type")
+        self.user = get_user_model().objects.create_user(
+            username="testuser",
+            password="testpassword",
+            years_of_experience=5,
+        )
+        self.cook = Cook.objects.create(username="testuser1", password="Testpassword123", years_of_experience=5,)
+        self.dish = Dish.objects.create(
+            name="Test Dish",
+            description="Lorem ipsum",
+            price=10.00,
+            dish_type=self.dish_type,
+        )
+        self.dish.cooks.add(self.cook)
+        self.url = reverse("kitchen:dish-detail", args=[self.dish.pk])
+
+    def test_view_url_exists_at_desired_location(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, "kitchen/dish_detail.html")
+
+    def test_view_returns_correct_dish(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.context["object"], self.dish)
+
+
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
+from kitchen.models import DishType, Dish, Cook
+
+class ToggleAssignToDishTest(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="testuser",
+            password="testpassword",
+            years_of_experience=5,
+        )
+        self.cook = Cook.objects.create(username="testuser12314", password="testpassword", years_of_experience=5)
+        self.dish_type = DishType.objects.create(name="Test Dish Type")
+        self.dish = Dish.objects.create(
+            name="Test Dish",
+            description="Lorem ipsum",
+            price=10.00,
+            dish_type=self.dish_type,
+        )
+
+        self.url = reverse("kitchen:toggle-dish-assign", args=[self.dish.pk])
+
+    def test_toggle_assign_to_dish(self):
+        self.client.force_login(self.user)
+
+        # Initially, the cook should have 0 dishes
+        self.assertEqual(self.cook.dishes.count(), 0)
+
+        # Assign the dish to the cook
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.cook.refresh_from_db()  # Refresh the cook instance from the database
+        self.assertEqual(self.cook.dishes.count(), 0)
+
+        # Toggle the dish assignment
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.cook.refresh_from_db()  # Refresh the cook instance from the database
+        self.assertEqual(self.cook.dishes.count(), 0)
+
+    def test_toggle_assign_to_dish_redirect(self):
+        self.client.force_login(self.user)
+
+        # Initially, the cook should have 0 dishes
+        self.assertEqual(self.cook.dishes.count(), 0)
+
+        # Assign the dish to the cook
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+        # Check if the view redirects to the correct dish-detail URL
+        expected_url = reverse("kitchen:dish-detail", args=[self.dish.pk])
+        self.assertRedirects(response, expected_url)
 
 
 class PublicDishTypeTest(TestCase):
