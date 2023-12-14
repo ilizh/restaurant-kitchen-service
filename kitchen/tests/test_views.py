@@ -17,7 +17,7 @@ class DishDetailViewTest(TestCase):
             password="testpassword",
             years_of_experience=5,
         )
-        self.cook = Cook.objects.create(username="testuser1", password="Testpassword123", years_of_experience=5,)
+        self.cook = Cook.objects.create(username="testuser1", password="Testpassword123", years_of_experience=5, )
         self.dish = Dish.objects.create(
             name="Test Dish",
             description="Lorem ipsum",
@@ -43,11 +43,6 @@ class DishDetailViewTest(TestCase):
         self.assertEqual(response.context["object"], self.dish)
 
 
-from django.contrib.auth import get_user_model
-from django.test import TestCase
-from django.urls import reverse
-from kitchen.models import DishType, Dish, Cook
-
 class ToggleAssignToDishTest(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
@@ -69,32 +64,25 @@ class ToggleAssignToDishTest(TestCase):
     def test_toggle_assign_to_dish(self):
         self.client.force_login(self.user)
 
-        # Initially, the cook should have 0 dishes
         self.assertEqual(self.cook.dishes.count(), 0)
 
-        # Assign the dish to the cook
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.cook.refresh_from_db()  # Refresh the cook instance from the database
+        self.cook.refresh_from_db()
         self.assertEqual(self.cook.dishes.count(), 0)
 
-        # Toggle the dish assignment
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
-        self.cook.refresh_from_db()  # Refresh the cook instance from the database
         self.assertEqual(self.cook.dishes.count(), 0)
 
     def test_toggle_assign_to_dish_redirect(self):
         self.client.force_login(self.user)
 
-        # Initially, the cook should have 0 dishes
         self.assertEqual(self.cook.dishes.count(), 0)
 
-        # Assign the dish to the cook
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
 
-        # Check if the view redirects to the correct dish-detail URL
         expected_url = reverse("kitchen:dish-detail", args=[self.dish.pk])
         self.assertRedirects(response, expected_url)
 
@@ -212,7 +200,7 @@ class PrivateDishTest(TestCase):
         self.assertEqual(response.status_code, 200)
         dishes = Dish.objects.all()
         self.assertEqual(
-            list(response.context["dish_list"]),  # Update the key to match the actual context variable
+            list(response.context["dish_list"]),
             list(dishes)
         )
         self.assertTemplateUsed(response, "kitchen/menu.html")
