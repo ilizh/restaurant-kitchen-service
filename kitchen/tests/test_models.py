@@ -1,53 +1,46 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.test import TestCase
-from kitchen.models import DishType, Dish
+from kitchen.models import DishType, Dish, Cook
 
 
 # Create your tests here.
-class ModelsTests(TestCase):
-    def test_cook_str(self):
-        cook = get_user_model().objects.create(
-            username="testing",
-            years_of_experience=9,
-            first_name="user123",
-            last_name="test",
-        )
-        self.assertEqual(
-            str(cook),
-            f"{cook.username} ({cook.first_name} {cook.last_name})"
-        )
+class DishTypeModelTest(TestCase):
+    def test_str_representation(self):
+        dish_type = DishType(name="Main Course")
+        self.assertEqual(str(dish_type), "Main Course")
 
-    def test_dish_type_str(self):
-        dish_type = DishType.objects.create(
-            name="Dish type 1",
-        )
-        self.assertEqual(
-            str(dish_type),
-            f"{dish_type.name}"
-        )
 
-    def test_dish_str(self):
-        dish_type2 = DishType.objects.create(
-            name="Dish type 2",
-        )
+class CookModelTest(TestCase):
+    def test_str_representation(self):
+        cook = Cook(username="chef_john", first_name="John", last_name="Doe", years_of_experience=5)
+        self.assertEqual(str(cook), "chef_john (John Doe)")
 
-        cooks = get_user_model().objects.create(
-            username="wist",
-            years_of_experience=2,
-            first_name="Anatoliy",
-            last_name="Repov",
-        )
+    def test_years_of_experience_validation(self):
+        with self.assertRaises(ValidationError):
+            cook = Cook(username="new_chef", first_name="New", last_name="Chef", years_of_experience=0)
+            cook.full_clean()
 
-        self.dish2 = Dish.objects.create(
-            name="Dish2",
-            description="Lorem ipsum dolor sed risus posuere luctus at nulla, hac himenaeos arcu ac nisl scelerisque.",
-            price=9.35,
-            dish_type=dish_type2,
-        )
 
-        self.dish2.cooks.set([cooks])
+class DishModelTest(TestCase):
+    def setUp(self):
+        self.dish_type = DishType.objects.create(name="Appetizer")
+        self.cook = Cook.objects.create(username="master_chef", first_name="Master", last_name="Chef",
+                                        years_of_experience=10)
 
-        self.assertEqual(
-            str(self.dish2),
-            f"{self.dish2.name}"
-        )
+    def test_str_representation(self):
+        dish = Dish(name="Spaghetti Carbonara", description="Classic Italian pasta dish", price=12.99,
+                    dish_type=self.dish_type)
+        self.assertEqual(str(dish), "Spaghetti Carbonara")
+
+    def test_cooks_relationship(self):
+        dish = Dish.objects.create(name="Pancakes", description="Fluffy pancakes", price=8.99,
+                                   dish_type=self.dish_type)
+        dish.cooks.set([self.cook])
+        self.assertEqual(dish.cooks.count(), 1)
+        self.assertEqual(dish.cooks.first(), self.cook)
+
+    def test_price_decimal_places(self):
+        with self.assertRaises(ValidationError):
+            dish = Dish(name="Pizza", description="Delicious pizza", price=19.12, dish_type=self.dish_type)
+            dish.full_clean()

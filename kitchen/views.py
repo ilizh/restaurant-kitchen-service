@@ -95,6 +95,6 @@ def toggle_assign_to_dish(request, pk):
     if dish in cook.dishes.all():
         cook.dishes.remove(dish)
     else:
-        if dish in Dish.objects.filter(cooks=cook):
-            cook.dishes.add(dish)
+        cook.dishes.add(dish)
+
     return HttpResponseRedirect(reverse_lazy("kitchen:dish-detail", args=[pk]))
