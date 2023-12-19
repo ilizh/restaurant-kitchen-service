@@ -12,7 +12,7 @@ class DishType(models.Model):
 
 
 class Cook(AbstractUser):
-    years_of_experience = models.IntegerField(blank=False, validators=[
+    years_of_experience = models.IntegerField(blank=False, null=True, validators=[
         MinValueValidator(1)
     ])
 
